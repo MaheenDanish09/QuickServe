@@ -66,8 +66,8 @@ function renderHow() {
 function providerCard(p) {
   return `
   <div class="col-sm-6 col-lg-4" data-card>
-    <a class="text-decoration-none provider-card d-block" href="/provider.html?id=${encodeURIComponent(p.id)}">
-      <div class="thumb"><img src="${esc(p.photoURL || "/images/og-cover.png")}" alt="${esc(p.name)}" loading="lazy"></div>
+    <a class="text-decoration-none provider-card d-block" href="provider.html?id=${encodeURIComponent(p.id)}">
+      <div class="thumb"><img src="${esc(p.photoURL || "images/og-cover.png")}" alt="${esc(p.name)}" loading="lazy"></div>
       <div class="body">
         <span class="cat-tag"><i class="bi ${catIcon(p.category)} me-1"></i>${catName(p.category)}</span>
         <h5 class="fw-bold mb-0 mt-1" style="color:var(--ink)">${esc(p.name)}</h5>
@@ -123,7 +123,7 @@ function renderFeatured() {
   const top = [...state.providers].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 4);
   $("#featuredGrid").innerHTML = top.map((p) => `
     <div class="col-sm-6">
-      <a href="/provider.html?id=${encodeURIComponent(p.id)}" class="surface p-3 d-flex align-items-center gap-3 text-decoration-none h-100" style="border-radius:14px">
+      <a href="provider.html?id=${encodeURIComponent(p.id)}" class="surface p-3 d-flex align-items-center gap-3 text-decoration-none h-100" style="border-radius:14px">
         <img src="${esc(p.photoURL)}" class="avatar" alt="${esc(p.name)}">
         <div class="flex-grow-1">
           <div class="fw-bold" style="color:var(--ink)">${esc(p.name)}</div>

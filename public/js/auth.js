@@ -20,7 +20,7 @@ const back = await store();
 let firstAuth = true;
 back.onAuth((user) => {
   if (firstAuth && user) {
-    location.href = redirect || (user.role === "provider" ? "/provider-dashboard.html" : "/dashboard.html");
+    location.href = redirect || (user.role === "provider" ? "provider-dashboard.html" : "dashboard.html");
   }
   firstAuth = false;
 });
@@ -28,12 +28,12 @@ back.onAuth((user) => {
 function render() {
   const isReg = mode === "register";
   els.title.textContent = isReg ? "Create your account" : "Welcome back";
-  els.sub.textContent = isReg ? "Join ServiHub in less than a minute." : "Log in to manage your bookings.";
+  els.sub.textContent = isReg ? "Join QuickServe in less than a minute." : "Log in to manage your bookings.";
   els.roleToggle.hidden = !isReg;
   els.nameField.hidden = !isReg;
   els.phoneField.hidden = !(isReg && role === "provider");
   els.submitLabel.textContent = isReg ? "Create account" : "Log in";
-  els.switchText.textContent = isReg ? "Already have an account?" : "New to ServiHub?";
+  els.switchText.textContent = isReg ? "Already have an account?" : "New to QuickServe?";
   els.switchMode.textContent = isReg ? "Log in instead" : "Create an account";
   if (window.gsap) gsap.fromTo("[data-auth-card]", { opacity: .6, y: 8 }, { opacity: 1, y: 0, duration: .3 });
 }
@@ -79,14 +79,14 @@ form.addEventListener("submit", async (e) => {
     let user;
     if (mode === "register") {
       user = await back.register({ name: data.name.trim(), email: data.email, password: data.password, role, phone: data.phone });
-      toast("Account created — welcome to ServiHub!", "ok");
+      toast("Account created — welcome to QuickServe!", "ok");
     } else {
       user = await back.login(data.email, data.password);
       toast("Signed in successfully.", "ok");
     }
     firstAuth = false;
     setTimeout(() => {
-      location.href = redirect || (user.role === "provider" ? "/provider-dashboard.html" : "/dashboard.html");
+      location.href = redirect || (user.role === "provider" ? "provider-dashboard.html" : "dashboard.html");
     }, 500);
   } catch (err) {
     const msg = (err && err.message ? err.message : "Something went wrong.")

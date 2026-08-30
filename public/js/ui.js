@@ -41,43 +41,65 @@ export function toast(message, type = "") {
 
 // ---------------- Navbar ----------------
 export async function mountChrome(active = "") {
-  const back = await store();
   const header = document.createElement("div");
 
-  const banner = firebaseReady
-    ? ""
-    : `<div class="config-banner"><i class="bi bi-info-circle"></i> Demo mode — add your Firebase config in <code>js/config.js</code> to go live. Provider logins use password <strong>demo1234</strong>.</div>`;
+  const banner = "";
 
   header.innerHTML = `${banner}
   <nav class="nav-shell">
     <div class="container-tight d-flex align-items-center justify-content-between py-3">
-      <a class="brand-logo" href="/index.html">
-        <span class="mark"><i class="bi bi-tools"></i></span> ServiHub
+      <a class="brand-logo" href="index.html">
+        <span class="mark"><i class="bi bi-tools"></i></span> QuickServe
       </a>
-      <div class="d-none d-lg-flex align-items-center gap-4">
-        <a class="nav-link ${active === "home" ? "text-brand" : ""}" href="/index.html#services">Browse Services</a>
-        <a class="nav-link" href="/index.html#how">How it works</a>
-        <a class="nav-link" href="/index.html#featured">Top Rated</a>
+      <button class="navbar-toggler d-lg-none" type="button" aria-controls="quickserveNav" aria-expanded="false" aria-label="Open navigation">
+        <i class="bi bi-list" aria-hidden="true"></i>
+      </button>
+      <div class="offcanvas offcanvas-end nav-drawer" tabindex="-1" id="quickserveNav" aria-labelledby="quickserveNavTitle">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="quickserveNavTitle">QuickServe menu</h5>
+          <button type="button" class="btn-close" aria-label="Close navigation"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2 gap-lg-4">
+            <a class="nav-link" data-bs-dismiss="offcanvas" href="index.html#services">Browse Services</a>
+            <a class="nav-link" data-bs-dismiss="offcanvas" href="index.html#how">How it works</a>
+            <a class="nav-link" data-bs-dismiss="offcanvas" href="index.html#featured">Top Rated</a>
+          </div>
+          <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0 ms-lg-4" id="navAuth"></div>
+        </div>
       </div>
-      <div class="d-flex align-items-center gap-2" id="navAuth"></div>
     </div>
   </nav>`;
   document.body.prepend(header);
 
+  const drawer = $("#quickserveNav", header);
+  const toggle = $(".navbar-toggler", header);
+  const closeDrawer = () => {
+    drawer.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+  toggle.addEventListener("click", () => {
+    const isOpen = drawer.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+  $(".btn-close", drawer).addEventListener("click", closeDrawer);
+  $$('[data-bs-dismiss="offcanvas"]', drawer).forEach((link) => link.addEventListener("click", closeDrawer));
+
+  const back = await store();
   const navAuth = $("#navAuth", header);
   back.onAuth((user) => {
     if (!user) {
       navAuth.innerHTML = `
-        <a class="btn btn-ghost d-none d-sm-inline" href="/auth.html">Log in</a>
-        <a class="btn btn-brand" href="/auth.html?mode=register">Get started</a>`;
+        <a class="btn btn-ghost" data-bs-dismiss="offcanvas" href="auth.html">Log in</a>
+        <a class="btn btn-brand" href="auth.html?mode=register">Get started</a>`;
     } else {
-      const dash = user.role === "provider" ? "/provider-dashboard.html" : "/dashboard.html";
+      const dash = user.role === "provider" ? "provider-dashboard.html" : "dashboard.html";
       const initial = (user.name || user.email || "U").charAt(0).toUpperCase();
       const av = user.photoURL
         ? `<img src="${esc(user.photoURL)}" class="avatar" alt="">`
         : `<span class="avatar d-inline-grid" style="place-items:center;background:var(--brand-soft);color:var(--brand);font-weight:800;">${initial}</span>`;
       navAuth.innerHTML = `
-        <a class="btn btn-outline-ink btn-sm d-none d-sm-inline" href="${dash}">
+        <a class="btn btn-outline-ink btn-sm" data-bs-dismiss="offcanvas" href="${dash}">
           <i class="bi bi-grid-1x2 me-1"></i>${user.role === "provider" ? "Provider" : "My"} Dashboard
         </a>
         <div class="dropdown">
@@ -96,7 +118,7 @@ export async function mountChrome(active = "") {
         e.preventDefault();
         await back.logout();
         toast("Signed out", "ok");
-        setTimeout(() => (location.href = "/index.html"), 500);
+        setTimeout(() => (location.href = "index.html"), 500);
       });
     }
   });
@@ -109,21 +131,21 @@ export function mountFooter() {
     <div class="container-tight">
       <div class="row g-4">
         <div class="col-lg-4">
-          <a class="brand-logo mb-3 d-inline-flex" href="/index.html"><span class="mark"><i class="bi bi-tools"></i></span> ServiHub</a>
+          <a class="brand-logo mb-3 d-inline-flex" href="index.html"><span class="mark"><i class="bi bi-tools"></i></span> QuickServe</a>
           <p class="text-secondary" style="max-width:320px;">Book trusted local professionals for your home in minutes. Vetted providers, transparent pricing, real reviews.</p>
         </div>
         <div class="col-6 col-lg-2">
           <h6 class="text-white mb-3">Company</h6>
           <ul class="list-unstyled d-flex flex-column gap-2 small">
-            <li><a href="/index.html#how">How it works</a></li>
-            <li><a href="/index.html#featured">Top rated</a></li>
-            <li><a href="/auth.html?mode=register">Become a provider</a></li>
+            <li><a href="index.html#how">How it works</a></li>
+            <li><a href="index.html#featured">Top rated</a></li>
+            <li><a href="auth.html?mode=register">Become a provider</a></li>
           </ul>
         </div>
         <div class="col-6 col-lg-2">
           <h6 class="text-white mb-3">Services</h6>
           <ul class="list-unstyled d-flex flex-column gap-2 small">
-            ${SERVICE_CATEGORIES.slice(0, 4).map((c) => `<li><a href="/index.html#services">${c.name}</a></li>`).join("")}
+            ${SERVICE_CATEGORIES.slice(0, 4).map((c) => `<li><a href="index.html#services">${c.name}</a></li>`).join("")}
           </ul>
         </div>
         <div class="col-lg-4">
@@ -137,7 +159,7 @@ export function mountFooter() {
       </div>
       <hr class="my-4" style="border-color:rgba(255,255,255,.12)">
       <div class="d-flex flex-column flex-md-row justify-content-between gap-2 small text-secondary">
-        <span>© ${new Date().getFullYear()} ServiHub. All rights reserved.</span>
+        <span>© ${new Date().getFullYear()} QuickServe. All rights reserved.</span>
         <span>Built with HTML, Bootstrap, Firebase, Cloudinary & GSAP.</span>
       </div>
     </div>`;
@@ -174,10 +196,10 @@ export async function requireAuth(role) {
       if (settled) return;
       settled = true;
       if (!user) {
-        location.href = "/auth.html?redirect=" + encodeURIComponent(location.pathname);
+        location.href = "auth.html?redirect=" + encodeURIComponent(location.pathname);
       } else if (role && user.role !== role) {
         toast("You don't have access to that page.", "err");
-        setTimeout(() => (location.href = user.role === "provider" ? "/provider-dashboard.html" : "/dashboard.html"), 800);
+        setTimeout(() => (location.href = user.role === "provider" ? "provider-dashboard.html" : "dashboard.html"), 800);
       } else {
         resolve({ user, back });
       }

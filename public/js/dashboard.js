@@ -23,7 +23,7 @@ const TABS = [
 
 function renderTabs() {
   $("#filterTabs").innerHTML = TABS.map((t) =>
-    `<button class="chip ${t.id === filter ? "active" : ""}" data-f="${t.id}">${t.label}</button>`).join("");
+    `<button type="button" class="chip ${t.id === filter ? "active" : ""}" data-f="${t.id}" aria-pressed="${t.id === filter}">${t.label}</button>`).join("");
   $$("#filterTabs .chip").forEach((c) =>
     c.addEventListener("click", () => { filter = c.dataset.f; renderTabs(); renderList(); }));
 }
@@ -45,7 +45,7 @@ function bookingRow(b) {
   return `
   <div class="booking-row" data-row>
     <div class="d-flex flex-wrap align-items-start gap-3">
-      <img src="${esc(b.providerPhoto || "/images/og-cover.png")}" class="avatar" alt="${esc(b.providerName)}">
+      <img src="${esc(b.providerPhoto || "images/og-cover.png")}" class="avatar" alt="${esc(b.providerName)}">
       <div class="flex-grow-1">
         <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
           <span class="booking-id">${esc(b.code || b.id)}</span>
@@ -60,7 +60,7 @@ function bookingRow(b) {
         <p class="text-muted-2 small mb-0">${esc(b.description)}</p>
       </div>
       <div class="d-flex flex-column gap-2">
-        <a href="/provider.html?id=${encodeURIComponent(b.providerId)}" class="btn btn-outline-ink btn-sm">View provider</a>
+        <a href="provider.html?id=${encodeURIComponent(b.providerId)}" class="btn btn-outline-ink btn-sm">View provider</a>
         ${canReview ? `<button class="btn btn-brand btn-sm" data-review="${b.id}"><i class="bi bi-star me-1"></i>Leave review</button>` : ""}
         ${b.reviewed ? `<span class="text-success small text-center"><i class="bi bi-check-circle-fill"></i> Reviewed</span>` : ""}
       </div>
@@ -72,7 +72,10 @@ function renderList() {
   const list = bookings.filter(matches);
   const wrap = $("#bookingList");
   if (!list.length) {
-    wrap.innerHTML = `<div class="empty-state surface"><div class="icon"><i class="bi bi-calendar-x"></i></div><h5 class="fw-bold">No bookings here</h5><p>When you book a professional, it'll show up in this list.</p><a href="/index.html#services" class="btn btn-brand mt-2">Browse services</a></div>`;
+    const emptyText = filter === "all"
+      ? "When you book a professional, it'll show up in this list."
+      : `There are no ${filter === "active" ? "active" : filter} bookings right now.`;
+    wrap.innerHTML = `<div class="empty-state surface"><div class="icon"><i class="bi bi-calendar-x"></i></div><h5 class="fw-bold">No bookings here</h5><p>${emptyText}</p><a href="index.html#services" class="btn btn-brand mt-2">Browse services</a></div>`;
     return;
   }
   wrap.innerHTML = list.map(bookingRow).join("");

@@ -1,5 +1,5 @@
 // =============================================================
-//  ServiHub — Data layer
+//  QuickServe — Data layer
 //  One API, two backends:
 //   • Firebase (Auth + Firestore) when config is provided
 //   • localStorage demo mode otherwise (so the preview always works)
@@ -39,7 +39,7 @@ async function firebaseBackend() {
       );
     }
   }
-  ensureSeed();
+  await ensureSeed();
 
   return {
     mode: "firebase",
@@ -118,9 +118,10 @@ async function firebaseBackend() {
 //  localStorage implementation (demo mode)
 // ------------------------------------------------------------------
 function localBackend() {
-  const KEY = "servihub_db_v1";
+  const KEY = "quickserve_db_v1";
   const read = () => JSON.parse(localStorage.getItem(KEY) || "null");
   const write = (d) => localStorage.setItem(KEY, JSON.stringify(d));
+  const normalizeImage = (url = "") => url.replace(/^\/images\//, "images/");
 
   let db = read();
   if (!db) {
@@ -135,6 +136,11 @@ function localBackend() {
       };
     });
     db = { users, providers, bookings: [], reviews: [], session: null };
+    write(db);
+  } else {
+    Object.values(db.providers || {}).forEach((p) => { p.photoURL = normalizeImage(p.photoURL); });
+    Object.values(db.users || {}).forEach((u) => { u.photoURL = normalizeImage(u.photoURL); });
+    db.bookings?.forEach((b) => { b.providerPhoto = normalizeImage(b.providerPhoto); });
     write(db);
   }
 
@@ -224,6 +230,15 @@ function localBackend() {
 let _backend = null;
 export async function store() {
   if (_backend) return _backend;
-  _backend = firebaseReady ? await firebaseBackend() : localBackend();
+  if (firebaseReady) {
+    try {
+      _backend = await firebaseBackend();
+    } catch (error) {
+      console.warn("Firebase unavailable; using local demo data.", error);
+      _backend = localBackend();
+    }
+  } else {
+    _backend = localBackend();
+  }
   return _backend;
 }

@@ -14,7 +14,7 @@ const root = $("#providerRoot");
 const provider = id ? await back.getProvider(id) : null;
 
 if (!provider) {
-  root.innerHTML = `<div class="empty-state surface"><div class="icon"><i class="bi bi-emoji-frown"></i></div><h4 class="fw-bold">Provider not found</h4><p>This professional may no longer be available.</p><a href="/index.html" class="btn btn-brand mt-2">Back to home</a></div>`;
+  root.innerHTML = `<div class="empty-state surface"><div class="icon"><i class="bi bi-emoji-frown"></i></div><h4 class="fw-bold">Provider not found</h4><p>This professional may no longer be available.</p><a href="index.html" class="btn btn-brand mt-2">Back to home</a></div>`;
 } else {
   const reviews = await back.getReviews(provider.id);
   renderProvider(provider, reviews);
@@ -22,16 +22,16 @@ if (!provider) {
 
 function renderProvider(p, reviews) {
   root.innerHTML = `
-  <nav class="mb-3 small"><a href="/index.html" class="text-muted-2"><i class="bi bi-arrow-left me-1"></i>Back to marketplace</a></nav>
+  <nav class="mb-3 small"><a href="index.html" class="text-muted-2"><i class="bi bi-arrow-left me-1"></i>Back to marketplace</a></nav>
   <div class="row g-4">
     <div class="col-lg-8" data-detail>
       <div class="surface overflow-hidden mb-4">
         <div style="aspect-ratio:16/6;overflow:hidden;background:#eef2f7">
-          <img src="${esc(p.photoURL || "/images/og-cover.png")}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover">
+          <img src="${esc(p.photoURL || "images/og-cover.png")}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover">
         </div>
         <div class="p-4">
           <div class="d-flex flex-wrap align-items-start gap-3">
-            <img src="${esc(p.photoURL || "/images/og-cover.png")}" class="avatar-lg" alt="${esc(p.name)}" style="margin-top:-56px">
+            <img src="${esc(p.photoURL || "images/og-cover.png")}" class="avatar-lg" alt="${esc(p.name)}" style="margin-top:-56px">
             <div class="flex-grow-1">
               <span class="cat-tag"><i class="bi ${catIcon(p.category)} me-1"></i>${catName(p.category)}</span>
               <h2 class="fw-bold mb-1 mt-2">${esc(p.name)}</h2>
@@ -102,7 +102,7 @@ function renderReviews(reviews) {
 function wireBooking(p) {
   const modalEl = $("#bookingModal");
   const modal = new bootstrap.Modal(modalEl);
-  $("#bmAvatar").src = p.photoURL || "/images/og-cover.png";
+  $("#bmAvatar").src = p.photoURL || "images/og-cover.png";
   $("#bmName").textContent = p.name;
   $("#bmCat").textContent = catName(p.category);
   $("#bmPrice").innerHTML = money(p.price) + " <span>/ hr</span>";
@@ -110,7 +110,7 @@ function wireBooking(p) {
   $("#openBooking").addEventListener("click", () => {
     if (!currentUser) {
       toast("Please log in to book a provider.", "err");
-      setTimeout(() => (location.href = "/auth.html?redirect=" + encodeURIComponent(location.pathname + location.search)), 900);
+      setTimeout(() => (location.href = "auth.html?redirect=" + encodeURIComponent(location.pathname + location.search)), 900);
       return;
     }
     if (currentUser.role === "provider") { toast("Switch to a customer account to book.", "err"); return; }
@@ -145,7 +145,7 @@ function wireBooking(p) {
       });
       modal.hide();
       toast("Booking request sent! Track it in your dashboard.", "ok");
-      setTimeout(() => (location.href = "/dashboard.html"), 1100);
+      setTimeout(() => (location.href = "dashboard.html"), 1100);
     } catch (err) {
       toast(err.message || "Could not create booking.", "err");
       btn.disabled = false; btn.querySelector(".spinner-border").classList.add("d-none");

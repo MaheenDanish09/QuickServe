@@ -48,7 +48,7 @@ function fillProfileForm() {
   f.location.value = profile.location || "";
   f.bio.value = profile.bio || "";
   $("#publishSwitch").checked = profile.published !== false;
-  $("#profilePreview").src = profile.photoURL || "/images/og-cover.png";
+  $("#profilePreview").src = profile.photoURL || "images/og-cover.png";
   renderPubStatus(profile.published !== false);
 }
 function renderPubStatus(pub) {

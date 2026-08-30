@@ -1,32 +1,27 @@
 // =============================================================
-//  ServiHub — Configuration
-//  Paste your Firebase project config below. Until you do, the
-//  app automatically runs in LOCAL DEMO MODE (data is stored in
-//  the browser via localStorage) so you can preview everything.
+//  QuickServe — Configuration
 // =============================================================
 
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyCdVckxscetRZzlsIp1R6q4UFxWM8-mPfQ",
+  authDomain: "femhack-template.firebaseapp.com",
+  projectId: "femhack-template",
+  storageBucket: "femhack-template.firebasestorage.app",
+  messagingSenderId: "160729730748",
+  appId: "1:160729730748:web:b865ad6dfb02170e408ab9"
 };
 
 // ---- Cloudinary (unsigned upload) — used for provider & profile images ----
 // Create an unsigned upload preset in your Cloudinary dashboard and set it here.
 export const cloudinaryConfig = {
-  cloudName: "YOUR_CLOUD_NAME",
-  uploadPreset: "YOUR_UNSIGNED_PRESET",
+  cloudName: "ie54wile",
+  uploadPreset: "femhack",
 };
 
 // True when Firebase has real credentials (not the placeholders above).
-export const firebaseReady =
-  firebaseConfig.apiKey &&
-  !firebaseConfig.apiKey.startsWith("YOUR_") &&
-  firebaseConfig.projectId &&
-  !firebaseConfig.projectId.startsWith("YOUR_");
+// Keep the MVP usable from Live Server without depending on Firebase network
+// access. Set this to true after confirming the Firebase project is configured.
+export const firebaseReady = false;
 
 export const cloudinaryReady =
   cloudinaryConfig.cloudName &&
